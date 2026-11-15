@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- GitHub social preview (1280×640). Render: see preview/record.py. Uses docs/hud.png (demo data). -->
+<html><head><meta charset="utf-8"><title>Desktop HUD social preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500&family=Share+Tech+Mono&display=swap">
+<style>
+html,body{margin:0;width:1280px;height:640px;overflow:hidden;background:#030c1d}
+.shot{position:absolute;inset:0;background:url(../docs/hud.png) center 22%/cover}
+.fade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,12,29,0) 34%,rgba(3,12,29,.94) 58%,#030c1d 100%)}
+.txt{position:absolute;left:64px;right:64px;bottom:58px;color:#dff6ff}
+.brand{font:16px 'Share Tech Mono',monospace;letter-spacing:.42em;color:#5ab4ff}
+h1{margin:6px 0 10px;font:500 84px/1 Rajdhani,sans-serif;letter-spacing:.2em;text-shadow:0 0 18px rgba(111,227,255,.55)}
+.sub{font:300 27px Rajdhani,sans-serif;letter-spacing:.06em;color:#a9d4f5}
+.sub b{font-weight:500;color:#6fe3ff}
+.rule{width:120px;height:2px;margin-bottom:18px;background:#6fe3ff;box-shadow:0 0 10px #6fe3ff}
+</style></head><body>
+<div class="shot"></div><div class="fade"></div>
+<div class="txt">
+  <div class="rule"></div>
+  <div class="brand">MORANTE ROBOTICS</div>
+  <h1>DESKTOP HUD</h1>
+  <div class="sub">Your macOS wallpaper as a sci-fi HUD · <b>Übersicht</b> · new panels with <b>AI</b></div>
+</div>
+<script>document.fonts.ready.then(() => { window.hudReady = true; });</script>
+</body></html>

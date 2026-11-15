@@ -1,19 +1,21 @@
 """Made-up state.json for screenshots and for trying the widget without the daemon.
 Times are relative to now, so the HUD never shows it as frozen or expired.
+`step` advances the live values by one 2-second refresh (for the animated preview).
 Nothing here comes from a real machine or account."""
 import math, time
 from datetime import datetime, timedelta, timezone
 
 
-def make():
+def make(step=0):
+    k = step
     now = time.time()
     iso = lambda h: (datetime.now(timezone.utc) + timedelta(hours=h)).isoformat()
-    hist = [round(22 + 14 * math.sin(i / 6) + 9 * math.sin(i / 2.3)) for i in range(60)]
+    hist = [round(22 + 14 * math.sin(i / 6) + 9 * math.sin(i / 2.3)) for i in range(k, k + 60)]
     return {
         "t": now,
         "sys": {
-            "cpu": hist[-1], "cores": [31, 18, 44, 12, 27, 9, 38, 15], "cpuHist": hist,
-            "memPressure": 46, "swapGB": 0.4, "down": 2.4e6, "up": 3.1e5,
+            "cpu": hist[-1], "cores": [int(max(2, c + 9 * math.sin(k + j))) for j, c in enumerate([31, 18, 44, 12, 27, 9, 38, 15])], "cpuHist": hist,
+            "memPressure": 46, "swapGB": 0.4, "down": 2.4e6 * (1 + 0.5 * math.sin(k * 1.3)), "up": 3.1e5 * (1 + 0.4 * math.cos(k)),
             "top": [["Bambu Studio", 41], ["Claude", 18], ["macOS system", 9]],
             "battery": {"pct": 84, "state": "charging", "ac": True, "remaining": "0:42"},
             "diskUsedPct": 63, "diskFreeGB": 371, "uptime": 3 * 86400 + 5 * 3600,
@@ -24,7 +26,7 @@ def make():
             "fiveHour": {"pct": 38, "resetsAt": iso(2.6)}, "week": {"pct": 57, "resetsAt": iso(52)},
             "plan": "max", "limitsAt": now - 60, "limitsStale": False,
             "service": {"indicator": "none", "incident": None},
-            "tokensToday": 3_480_000, "tokensWeek": 21_900_000,
+            "tokensToday": 3_480_000 + 14_000 * k, "tokensWeek": 21_900_000,
             "sessions": [
                 {"name": "robot-arm · gripper CAD", "status": "busy", "since": (now - 300) * 1000},
                 {"name": "desktop-hud · NAS panel", "status": "waiting", "since": (now - 900) * 1000},
@@ -39,8 +41,8 @@ def make():
         },
         "printer": {
             "name": "Workshop printer", "model": "Bambu Lab P2S", "online": True, "updated": now - 3,
-            "state": "RUNNING", "pct": 62, "remainingMin": 74, "layer": 148, "layers": 236,
-            "job": "gripper_jaw_v3.3mf", "nozzle": 220, "nozzleTarget": 220, "bed": 65, "bedTarget": 65,
+            "state": "RUNNING", "pct": 62 + k // 3, "remainingMin": 74 - k // 2, "layer": 148 + k, "layers": 236,
+            "job": "gripper_jaw_v3.3mf", "nozzle": 220 + (-1, 0, 1, 0)[k % 4], "nozzleTarget": 220, "bed": 65, "bedTarget": 65,
             "ams": [{"type": "PLA", "color": "#1b1b1b", "remain": 71, "active": True},
                     {"type": "PLA", "color": "#f2f2f2", "remain": 34, "active": False},
                     {"type": "PETG", "color": "#2f7fd6", "remain": 12, "active": False},

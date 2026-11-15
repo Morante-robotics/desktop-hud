@@ -4,9 +4,10 @@ A sci-fi heads-up display as your macOS wallpaper: system load, Claude Code usag
 traffic and the weather, live on the desktop behind your windows. It's part of setting up the workbench for my
 [robotics capstones](https://github.com/Morante-robotics/robotics-capstones), and I built it with Claude Code.
 
-![The HUD with demo data](docs/hud.png)
+![The HUD running with demo data](docs/hud.gif)
 
-*Screenshot made from [made-up data](preview/demo_state.py), not from a real machine.*
+*Recorded from [made-up data](preview/demo_state.py), not from a real machine. The rings turn faster than on the
+real desktop so the loop stays short. [Full-resolution still](docs/hud.png).*
 
 The point of this repository isn't to give you my panels. It's to show the pattern, which is small enough that an AI
 assistant can add whatever you want to monitor in one conversation.
@@ -69,7 +70,11 @@ starts at login, restarts if it crashes and runs at low priority). It also copie
 turns on two Übersicht settings the HUD needs: "draw in background" for the HUD and the interaction layer for the
 buttons. Re-run it after any change; `./install.sh --uninstall` removes everything except your data folder.
 
-Optional printer link: `python3 daemon/bambu_login.py`.
+Then:
+
+- Make Übersicht start at login: System Settings → General → Login Items → add Übersicht.
+- Allow location access when macOS asks (for the weather city), or the HUD uses an approximate city from your IP.
+- Optional printer link: `python3 daemon/bambu_login.py`.
 
 ## Configure
 
@@ -148,9 +153,9 @@ To make it yours, swap the logo in the centre: it's the `LOGO` SVG path in `widg
 | `locate/` | CoreLocation helper for the weather city |
 | `install.sh` | Installs, updates, uninstalls |
 | `measure.sh` | Measures the real CPU cost |
-| `preview/` | Browser preview, demo data and screenshot script |
+| `preview/` | Browser preview, demo data, and the script that records the screenshot, the GIF and the social preview |
 
 ## License
 
-Code under the [MIT License](LICENSE); the screenshot under
+Code under the [MIT License](LICENSE); the images in `docs/` under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
