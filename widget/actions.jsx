@@ -39,13 +39,16 @@ export const render = ({ s, busy }, dispatch) => {
   const needBambu = !p.disabled && p.configured === false || (p.tokenExpiresAt && p.tokenExpiresAt - Date.now() / 1000 < 7 * 86400);
   const needClaude = !!c.limitsStale;
   if (!needBambu && !needClaude) return null;
+  // same screen fit as hud.jsx (keep 1760 × 1060 in step with its MIN_W / MIN_H)
+  const W = window.innerWidth, H = window.innerHeight;
+  const k = Math.min(1, W / 1760, H / 1060);
   return (
-    <div>
+    <div style={{ position: "absolute", left: 0, top: 0, transformOrigin: "0 0", transform: k < 1 ? `scale(${k})` : undefined }}>
       <style>{CSS}</style>
       {needClaude && <Button id="claude" label="RENEW CLAUDE SESSION" busy={busy.claude} dispatch={dispatch}
         style={{ left: 40, top: 578 }} />}
       {needBambu && <Button id="bambu" label={p.configured === false ? "LINK BAMBU LAB" : "RENEW BAMBU LOGIN"} busy={busy.bambu}
-        dispatch={dispatch} style={{ left: "calc(100vw - 280px)", top: 578 }} />}
+        dispatch={dispatch} style={{ left: W / k - 280, top: 578 }} />}
     </div>
   );
 };

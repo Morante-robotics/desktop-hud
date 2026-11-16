@@ -70,6 +70,9 @@ starts at login, restarts if it crashes and runs at low priority). It also copie
 turns on two Übersicht settings the HUD needs: "draw in background" for the HUD and the interaction layer for the
 buttons. Re-run it after any change; `./install.sh --uninstall` removes everything except your data folder.
 
+The layout is drawn for a screen of about 1760 × 1060 points. On a smaller one, such as a laptop's built-in display,
+the whole HUD scales down to fit, and it adjusts by itself when you plug in or unplug a monitor.
+
 Then:
 
 - Make Übersicht start at login: System Settings → General → Login Items → add Übersicht.

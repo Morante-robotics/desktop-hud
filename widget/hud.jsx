@@ -13,6 +13,17 @@ export const updateState = (event, prev) => {
   try { return { s: JSON.parse(event.output) }; } catch (e) { return prev; }
 };
 
+// ------------------------------------------------------------ screen fit
+// The layout is drawn for a large monitor (needs about MIN_W × MIN_H points).
+// On a smaller screen everything is scaled down as one piece; on a large one k = 1.
+// actions.jsx keeps a copy of these numbers so its buttons stay aligned.
+const MIN_W = 1760, MIN_H = 1060;
+const fit = () => {
+  const W = window.innerWidth, H = window.innerHeight;
+  const k = Math.min(1, W / MIN_W, H / MIN_H);
+  return { k, w: W / k, h: H / k };
+};
+
 // ---------------------------------------------------------------- helpers
 const C = { c: "#6fe3ff", sky: "#5ab4ff", blue: "#2f7fd6", hot: "#dff6ff", mute: "#4f7fae", warn: "#ff9b3d", crit: "#ff5a3c", ok: "#5fffc3", box: "#061633", txt: "#a9d4f5" };
 const lvl = (v, w, c, low) => v == null ? "" : low ? (v <= c ? "crit" : v <= w ? "warn" : "") : (v >= c ? "crit" : v >= w ? "warn" : "");
@@ -360,8 +371,8 @@ const Core = ({ s }) => {
 };
 
 // -------------------------------------------------------------------- root
-export const render = ({ s }) => (
-  <div className="mh-root">
+export const render = ({ s }) => { const f = fit(); return (
+  <div className="mh-root" style={{ width: f.w, height: f.h, transform: f.k < 1 ? `scale(${f.k})` : undefined }}>
     <style>{CSS}</style>
     <div className="mh-tex" />
     {!s ? <div className="mh-sec mh-lbl" style={{ left: 40, top: 40 }}>Waiting for the Desktop HUD service…</div> : <>
@@ -374,11 +385,11 @@ export const render = ({ s }) => (
       {s.t && Date.now() / 1000 - s.t > 30 && <div className="mh-sec mh-dim" style={{ left: 40, bottom: 20, color: C.warn }}>DATA FROZEN SINCE {hhmm(new Date(s.t * 1000))} · HUD SERVICE NOT RESPONDING</div>}
     </>}
   </div>
-);
+); };
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500&family=Share+Tech+Mono&display=swap');
-.mh-root{position:absolute;inset:0;overflow:hidden;color:#a9d4f5;font-family:Rajdhani,'Helvetica Neue',sans-serif;
+.mh-root{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;color:#a9d4f5;font-family:Rajdhani,'Helvetica Neue',sans-serif;
   background:radial-gradient(ellipse 80% 70% at 55% 50%,#0a2550 0,#06183a 45%,#030c1d 100%)}
 .mh-tex{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(120,190,255,.035) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,4,12,.55) 100%)}
 .mh-sec{position:absolute}
