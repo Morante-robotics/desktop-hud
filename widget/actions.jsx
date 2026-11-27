@@ -16,9 +16,14 @@ export const updateState = (event, prev) => {
 const RESTART = 'launchctl kickstart -k "gui/$(id -u)/local.desktop-hud"';
 const ENV = 'PATH="$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"';
 const ACTIONS = {
-  // Same renewal the service tries hourly on its own; this is the manual fallback.
-  claude: `cd "${APP}"; ${ENV}; claude auth status --json >/dev/null 2>&1; ` +
-          `claude -p --no-session-persistence --model haiku "Reply with: ok" >/dev/null 2>&1; ${RESTART}`,
+  // Same renewal the service tries hourly on its own; this is the manual fallback. If the CLI
+  // is signed out there is nothing to renew, so open Terminal on `claude auth login` instead
+  // (the browser sign-in needs you); the service restarts once you finish.
+  claude: `cd "${APP}"; ${ENV}; C="$(command -v claude)"; ` +
+          `if "$C" auth status --json 2>/dev/null | grep -Eq '"loggedIn": *true'; then ` +
+          `"$C" -p --no-session-persistence --model haiku "Reply with: ok" >/dev/null 2>&1; ${RESTART}; ` +
+          `else osascript -e "tell application \\"Terminal\\" to do script \\"$C auth login && launchctl kickstart -k gui/$(id -u)/local.desktop-hud\\"" ` +
+          `-e 'tell application "Terminal" to activate' >/dev/null; fi`,
   // Opens macOS dialogs for email, password (hidden, not stored) and the emailed code.
   bambu: `${ENV}; python3 -I "${APP}/bambu_login.py" --gui`,
 };
@@ -45,7 +50,7 @@ export const render = ({ s, busy }, dispatch) => {
   return (
     <div style={{ position: "absolute", left: 0, top: 0, transformOrigin: "0 0", transform: k < 1 ? `scale(${k})` : undefined }}>
       <style>{CSS}</style>
-      {needClaude && <Button id="claude" label="RENEW CLAUDE SESSION" busy={busy.claude} dispatch={dispatch}
+      {needClaude && <Button id="claude" label={c.signedOut ? "SIGN IN TO CLAUDE" : "RENEW CLAUDE SESSION"} busy={busy.claude} dispatch={dispatch}
         style={{ left: 40, top: 578 }} />}
       {needBambu && <Button id="bambu" label={p.configured === false ? "LINK BAMBU LAB" : "RENEW BAMBU LOGIN"} busy={busy.bambu}
         dispatch={dispatch} style={{ left: W / k - 280, top: 578 }} />}

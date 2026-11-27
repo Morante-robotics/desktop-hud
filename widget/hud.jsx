@@ -118,7 +118,7 @@ const Claude = ({ s }) => {
       {svc.incident && <div className="mh-dim mh-ell" style={{ color: svcL[1], opacity: 0.9, marginTop: -6 }}>{svc.incident.toUpperCase()}</div>}
       <Limit label={`5-hour window${f && f.resetsAt ? ` · resets ${resetLabel(f.resetsAt)}` : ""}`} p={f} l={lf} warnTxt={lf === "crit" ? "AT LIMIT" : "NEAR LIMIT"} />
       <Limit label={`Weekly${w && w.resetsAt ? ` · resets ${resetLabel(w.resetsAt)}` : ""}`} p={w} l={lw} warnTxt={lw === "crit" ? "AT LIMIT" : "NEAR LIMIT"} />
-      {c.limitsStale && <div className="mh-dim" style={{ marginTop: 6, color: C.warn, opacity: 0.9 }}>{c.limitsAt ? `AS OF ${hhmm(new Date(c.limitsAt * 1000))} · ` : ""}SESSION EXPIRED · USE CLAUDE IN THE TERMINAL TO REFRESH</div>}
+      {c.limitsStale && <div className="mh-dim" style={{ marginTop: 6, color: C.warn, opacity: 0.9 }}>{c.limitsAt ? `AS OF ${hhmm(new Date(c.limitsAt * 1000))} · ` : ""}{c.signedOut ? "CLAUDE CLI SIGNED OUT · SIGN IN TO REFRESH" : "SESSION EXPIRED · USE CLAUDE IN THE TERMINAL TO REFRESH"}</div>}
       <div className="mh-dim" style={{ marginTop: 8 }}>TOKENS TODAY {tok(c.tokensToday)} · THIS WEEK {tok(c.tokensWeek)}{c.plan ? ` · PLAN ${c.plan.toUpperCase()}` : ""}</div>
       <div className="mh-lbl" style={{ margin: "16px 0 4px" }}>Active sessions · {c.sessionCount ?? 0}</div>
       <div className="mh-list" style={{ fontSize: 14 }}>

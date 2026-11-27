@@ -495,6 +495,11 @@ class Claude:
         if self.oauth and valid(self.oauth):
             return self.oauth
         o = self.oauth = self._keychain_oauth()
+        signed_out = not o.get("refreshToken")   # CLI logged out: nothing left to renew
+        with lock:
+            state["claude"]["signedOut"] = signed_out
+        if signed_out:
+            return None
         if valid(o) or time.time() - self.last_nudge < 3600:
             return o if valid(o) else None
         self.last_nudge = time.time()
